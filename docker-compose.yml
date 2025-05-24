@@ -13,11 +13,12 @@ services:
 
   nestjs:
     build:
-      context: .
+      context: ./nest
       dockerfile: Dockerfile
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
     environment:
+      - SERVER_PORT=${SERVER_PORT}
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
       - DB_USER=${DB_USER}
@@ -34,6 +35,23 @@ services:
           target: /app
           action: sync+restart
 
+  php:
+    build:
+      context: ./php
+      dockerfile: Dockerfile
+    ports:
+      - "${PHP_PORT}:${PHP_PORT}"
+    depends_on:
+      - nestjs
+    environment:
+      - PHP_PORT=${PHP_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+    networks:
+      - app-network
 
 networks:
   app-network:
