@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PHP MySQL API CRUD</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input, button, textarea { margin: 5px 0; display: block; width: 300px; }
+        .section { margin-bottom: 30px; border: 1px solid #ccc; padding: 20px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<h1>PHP MySQL API - User & Post CRUD</h1>
+
+<div class="section">
+    <h2>Create User</h2>
+    <input id="uname" placeholder="Name (max 50)">
+    <input id="uage" type="number" placeholder="Age (13-120)">
+    <input id="uemail" type="email" placeholder="Email">
+    <button onclick="createUser()">Create User</button>
+</div>
+
+<div class="section">
+    <h2>All Users</h2>
+    <button onclick="loadUsers()">Load Users</button>
+    <pre id="users"></pre>
+</div>
+
+<div class="section">
+    <h2>Create Post</h2>
+    <input id="ptitle" placeholder="Title (max 50)">
+    <textarea id="pcontent" placeholder="Content (max 250)" rows="4"></textarea>
+    <input id="puid" placeholder="User UUID">
+    <button onclick="createPost()">Create Post</button>
+</div>
+
+<div class="section">
+    <h2>All Posts</h2>
+    <button onclick="loadPosts()">Load Posts</button>
+    <pre id="posts"></pre>
+</div>
+
+<script>
+    async function createUser() {
+        const res = await fetch('/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: document.getElementById('uname').value,
+                age: parseInt(document.getElementById('uage').value),
+                email: document.getElementById('uemail').value
+            })
+        });
+        alert(await res.text());
+    }
+
+    async function loadUsers() {
+        const res = await fetch('/users');
+        document.getElementById('users').textContent = JSON.stringify(await res.json(), null, 2);
+    }
+
+    async function createPost() {
+        const res = await fetch('/posts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: document.getElementById('ptitle').value,
+                content: document.getElementById('pcontent').value,
+                user_id: document.getElementById('puid').value
+            })
+        });
+        alert(await res.text());
+    }
+
+    async function loadPosts() {
+        const res = await fetch('/posts');
+        document.getElementById('posts').textContent = JSON.stringify(await res.json(), null, 2);
+    }
+</script>
+
+</body>
+</html>
